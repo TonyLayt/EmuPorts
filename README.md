@@ -1,144 +1,34 @@
-# Емуляція системи портів введення-виведення x86 у Windows (C++)
+# EmuPorts
 
-Цей проєкт реалізує програмну **емуляцію системи портів введення-виведення (I/O) архітектури x86** у середовищі Windows на мові C++.
+EmuPorts is a small C++ learning project that demonstrates virtual port-mapped input and output without accessing real hardware.
 
-Мета — надати безпечний інструмент для навчання та експериментів з низькорівневим введенням-виведенням **без прямого доступу до апаратури** та без написання драйверів ядра.
+The program creates 256 virtual 8-bit ports. A character entered in the console is converted to its numeric value, written to port `0x60` and then read back.
 
-> Основна ідея: замість справжніх I/O-портів створюється набір **віртуальних портів**, які поводяться подібно до апаратних, але існують лише в памʼяті програми.
+Port `0x60` is inspired by the traditional x86 keyboard data port, but all operations in this project take place only in memory.
 
----
+## How it works
 
-## Основні можливості
+- `Port` stores an address and an 8-bit value.
+- `PortManager` creates and locates virtual ports.
+- `IOHandler` provides `in` and `out` operations.
+- `VirtualKeyboard` sends the entered character to port `0x60`.
 
-- Емуляція **адресного простору портів x86** (0x0000–0xFFFF).
-- Створення **віртуальних портів** з індивідуальною логікою:
-  - порти введення,
-  - порти виведення,
-  - двонаправлені порти.
-- OOП-архітектура:
-  - базовий інтерфейс порту (`Port`);
-  - похідні класи для конкретних пристроїв (наприклад, віртуальна клавіатура).
-- Централізований **менеджер портів**:
-  - реєстрація/видалення портів,
-  - пошук порту за адресою,
-  - маршрутизація операцій читання/запису.
-- Проміжний рівень обробки операцій (`IOHandler`):
-  - уніфікований інтерфейс для виконання команд введення-виведення;
-  - перевірка коректності адреси та значення перед передачею в `PortManager`;
-  - спрощення взаємодії між віртуальними пристроями та механізмом портів;
-  - використовується як у CLI-режимі, так і в окремих пристроях (наприклад, VirtualKeyboard).
-- Консольний інтерфейс (CLI) для тестування:
-  - читання значення порту;
-  - запис значення в порт;
-  - вивід списку зареєстрованих портів;
-  - симуляція натискання клавіш (для віртуальної клавіатури) — якщо реалізовано.
-- Можливість розширення новими віртуальними пристроями.
+For example, the character `A` is stored as the numeric value `65` and then read back from the same port.
 
----
+## Running the project
 
-## Архітектура проєкту
+Requirements:
 
-> **Увага:** назви класів/файлів нижче — приклад. Підстав свої реальні назви з коду.
+- Windows
+- Visual Studio with C++ development tools
 
-### Основні компоненти
+Open `EmuPorts.sln` in Visual Studio and press `Ctrl + F5`.
 
-- `Port`
-  - абстрактний базовий клас або інтерфейс для всіх віртуальних портів;
-  - типово містить:
-    - `uint16_t address;`
-    - віртуальні методи:
-      - `virtual uint8_t read() = 0;`
-      - `virtual void write(uint8_t value) = 0;`
+## Built with
 
-- Конкретні порти:
-  - `KeyboardPort`  
-    Емуляція контролера клавіатури (аналог портів 0x60 / 0x64):
-    - внутрішній буфер скан-кодів;
-    - методи для "натискання" клавіш із коду (для тестів).
-  - (за потреби) `GeneralPurposePort`, `StatusPort`, інші класи-емулятори.
-
-- `PortManager` / `Emulator`
-  - відповідає за:
-    - реєстрацію портів: `registerPort(std::shared_ptr<Port> port);`
-    - пошук порту за адресою;
-    - високорівневі операції:
-      - `uint8_t in(uint16_t portAddress);`
-      - `void out(uint16_t portAddress, uint8_t value);`
-
-- `IOHandler`
-  - проміжний компонент для виконання операцій введення-виведення;
-  - забезпечує:
-    - спрощений інтерфейс роботи з портами через методи `in()` та `out()`;
-    - перевірку наявності порту та коректності параметрів;
-    - інкапсуляцію роботи `PortManager` при взаємодії з CLI або віртуальними пристроями;
-    - можливість централізовано керувати помилками та логуванням операцій.
-
-- `main.cpp`
-  - точка входу;
-  - ініціалізація `PortManager` та реєстрація необхідних портів;
-  - реалізація консольного інтерфейсу:
-    - цикл команд: `in <addr>`, `out <addr> <value>`, `list`, `exit` тощо;
-    - демонстраційні сценарії для розділу "Приклади використання".
-  - для демонстрації роботи віртуальної клавіатури слід використовувати такий варіант `main()`:
-
-    ```cpp
-    int main() {
-        SetConsoleOutputCP(1251);
-        SetConsoleCP(1251);
-
-        PortManager manager;
-        manager.initialize(256);
-        IOHandler io(manager);
-        VirtualKeyboard keyboard(io);
-
-        std::cout << "Введіть символ для передачі у порт 0x60: ";
-        char input;
-        std::cin >> input;
-
-        keyboard.sendKey(input);   // записуємо символ у порт
-        keyboard.readKey();        // зчитуємо назад
-
-        return 0;
-    }
-    ```
-
-  - для тестування роботи емулятора у режимі CLI використовується наступний варіант `main()`:
-
-    ```cpp
-    int main() {
-        PortManager manager;
-        manager.initialize(256);
-        IOHandler io(manager);
-
-        std::string command;
-        std::cout << "Емулятор портів x86 запущено.\n";
-        std::cout << "Команди: OUT <addr> <value>, IN <addr>, STATE, EXIT\n";
-
-        while (true) {
-            std::cout << "> ";
-            std::getline(std::cin, command);
-            std::stringstream ss(command);
-            std::string op;
-            ss >> op;
-
-            if (op == "OUT") {
-                int addr, val;
-                ss >> std::hex >> addr >> std::dec >> val;
-                io.out(addr, val);
-            } else if (op == "IN") {
-                int addr;
-                ss >> std::hex >> addr;
-                std::cout << "Значення: " << (int)io.in(addr) << "\n";
-            } else if (op == "STATE") {
-                manager.displayState();
-            } else if (op == "EXIT") {
-                break;
-            } else {
-                std::cout << "Невідома команда.\n";
-            }
-        }
-    }
-    ```
+- C++
+- Visual Studio
+- Windows Console API
 
 
 

@@ -1,4 +1,4 @@
-#include "IOHandler.h"
+ï»¿#include "IOHandler.h"
 
 IOHandler::IOHandler(PortManager& m) : manager(m) {}
 
@@ -6,14 +6,14 @@ void IOHandler::out(uint16_t addr, uint8_t data)
 {
     Port* p = manager.findPort(addr);
     if (p) p->write(data);
-    else std::cerr << "Ïîìèëêà: ïîğò 0x" << std::hex << addr << " íå ³ñíóº.\n";
+    else std::cerr << "ĞŸĞ¾Ğ¼Ğ¸Ğ»ĞºĞ°: Ğ¿Ğ¾Ñ€Ñ‚ 0x" << std::hex << addr << " Ğ½Ğµ Ñ–ÑĞ½ÑƒÑ”.\n";
 }
 
 uint8_t IOHandler::in(uint16_t addr)
 {
     Port* p = manager.findPort(addr);
     if (p) return p->read();
-    std::cerr << "Ïîìèëêà: ïîğò 0x" << std::hex << addr << " íå ³ñíóº.\n";
+    std::cerr << "ĞŸĞ¾Ğ¼Ğ¸Ğ»ĞºĞ°: Ğ¿Ğ¾Ñ€Ñ‚ 0x" << std::hex << addr << " Ğ½Ğµ Ñ–ÑĞ½ÑƒÑ”.\n";
     return 0;
 }
 

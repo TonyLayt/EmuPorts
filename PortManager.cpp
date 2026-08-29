@@ -1,4 +1,4 @@
-#include "PortManager.h"
+ï»¿#include "PortManager.h"
 #include <iostream>
 
 void PortManager::initialize(uint16_t count)
@@ -21,7 +21,7 @@ Port* PortManager::findPort(uint16_t addr)
 
 void PortManager::displayState()
 {
-	std::cout << "Àäðåñà\tÇíà÷åííÿ\n";
+	std::cout << "ÐÐ´Ñ€ÐµÑÐ°\tÐ—Ð½Ð°Ñ‡ÐµÐ½Ð½Ñ\n";
 	for (const auto& p : ports)
 		std::cout << "0x" << std::hex << p.getAddress()
 		<< "\t" << std::dec << (int)p.read() << "\n";

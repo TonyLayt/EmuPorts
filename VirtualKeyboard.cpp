@@ -1,4 +1,4 @@
-#include "VirtualKeyboard.h"
+п»ї#include "VirtualKeyboard.h"
 
 
 VirtualKeyboard::VirtualKeyboard(IOHandler& handler) : io(handler) {}
@@ -7,13 +7,13 @@ VirtualKeyboard::VirtualKeyboard(IOHandler& handler) : io(handler) {}
 void VirtualKeyboard::sendKey(char key)
 {
     uint8_t code = static_cast<uint8_t>(key);
-    io.out(0x60, code); // записуємо код у порт клавіатури
-    std::cout << "Клавіша '" << key << "' відправлена у порт 0x60 (код: " << (int)code << ")\n";
+    io.out(0x60, code); // Р·Р°РїРёСЃСѓС”РјРѕ РєРѕРґ Сѓ РїРѕСЂС‚ РєР»Р°РІС–Р°С‚СѓСЂРё
+    std::cout << "РљР»Р°РІС–С€Р° '" << key << "' РІС–РґРїСЂР°РІР»РµРЅР° Сѓ РїРѕСЂС‚ 0x60 (РєРѕРґ: " << (int)code << ")\n";
 }
 
 void VirtualKeyboard::readKey()
 {
     uint8_t val = io.in(0x60);
-    std::cout << "Прочитано код із порту 0x60: " << (int)val
-        << " (символ: '" << static_cast<char>(val) << "')\n";
+    std::cout << "РџСЂРѕС‡РёС‚Р°РЅРѕ РєРѕРґ С–Р· РїРѕСЂС‚Сѓ 0x60: " << (int)val
+        << " (СЃРёРјРІРѕР»: '" << static_cast<char>(val) << "')\n";
 }

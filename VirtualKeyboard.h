@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "IOHandler.h"
 
 
@@ -8,9 +8,9 @@ private:
 public:
     VirtualKeyboard(IOHandler& handler);
 
-    // Імітація натискання клавіші
+    // Р†РјС–С‚Р°С†С–СЏ РЅР°С‚РёСЃРєР°РЅРЅСЏ РєР»Р°РІС–С€С–
     void sendKey(char key);
 
-    // Зчитування останнього натискання
+    // Р—С‡РёС‚СѓРІР°РЅРЅСЏ РѕСЃС‚Р°РЅРЅСЊРѕРіРѕ РЅР°С‚РёСЃРєР°РЅРЅСЏ
     void readKey();
 };

@@ -1,4 +1,4 @@
-#include <sstream>
+п»ї#include <sstream>
 #include <iostream>
 #include <windows.h>
 #include "PortManager.h"
@@ -14,12 +14,12 @@ int main() {
     IOHandler io(manager);
     VirtualKeyboard keyboard(io);
 
-    std::cout << "Введіть символ для передачі у порт 0x60: ";
+    std::cout << "Р’РІРµРґС–С‚СЊ СЃРёРјРІРѕР» РґР»СЏ РїРµСЂРµРґР°С‡С– Сѓ РїРѕСЂС‚ 0x60: ";
     char input;
     std::cin >> input;
 
-    keyboard.sendKey(input);   // записуємо символ у порт
-    keyboard.readKey();        // зчитуємо назад
+    keyboard.sendKey(input);   // Р·Р°РїРёСЃСѓС”РјРѕ СЃРёРјРІРѕР» Сѓ РїРѕСЂС‚
+    keyboard.readKey();        // Р·С‡РёС‚СѓС”РјРѕ РЅР°Р·Р°Рґ
 
     return 0;
 }

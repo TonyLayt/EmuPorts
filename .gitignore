@@ -4,9 +4,6 @@ x64/
 EmuPorts/
 
 # Проєктні файли Visual Studio
-*.sln
-*.vcxproj
-*.vcxproj.filters
 *.vcxproj.user
 
 # Build-файли
