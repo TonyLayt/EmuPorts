@@ -1,0 +1,32 @@
+# Папки, які треба виключити
+.vs/
+x64/
+EmuPorts/
+
+# Проєктні файли Visual Studio
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Build-файли
+*.obj
+*.pdb
+*.exe
+*.dll
+*.lib
+*.exp
+*.ilk
+
+# Інше службове сміття
+*.log
+*.cache
+*.db
+*.opendb
+*.ipch
+*.iobj
+*.tmp
+*.suo
+*.user
+Thumbs.db
+*.DS_Store
